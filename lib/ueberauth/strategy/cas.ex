@@ -60,6 +60,13 @@ defmodule Ueberauth.Strategy.CAS do
     |> put_private(:cas_user, nil)
   end
 
+  @doc """
+  Maybe cowboy can't process Comsys CAS URL, Add `conn` params manual.
+  """
+  def add_conn_params!(conn) do
+    %{conn | params: Map.merge(conn.params, query_string_to_map(conn.query_string)) }
+  end
+
   @doc "Ueberauth UID callback."
   def uid(conn), do: conn.private.cas_user.email
 
@@ -85,6 +92,14 @@ defmodule Ueberauth.Strategy.CAS do
       name: user.name,
       email: user.email
     }
+  end
+
+  @doc """
+  Ueberauth CAS error type.
+  """
+  def error_key(conn) do
+    err = conn.assigns.ueberauth_failure.errors |> List.first
+    err.message_key
   end
 
   @doc """
@@ -122,6 +137,13 @@ defmodule Ueberauth.Strategy.CAS do
   defp handle_validate_ticket_response({:ok, %CAS.User{} = user}, conn) do
     conn
     |> put_private(:cas_user, user)
+  end
+
+  defp query_string_to_map(str) do
+    str
+    |> String.split("&")
+    |> Enum.map( fn(x) -> String.split(x,"=") end )
+    |> Map.new(fn x -> {List.first(x),List.last(x)} end)
   end
 
 end
