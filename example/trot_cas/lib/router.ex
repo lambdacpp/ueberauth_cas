@@ -38,5 +38,16 @@ defmodule TrotCas.Router do
     end
   end
 
+  get "/logout" do
+    conn
+      |> Map.put(:secret_key_base, String.duplicate("1qwGGnj8", 8))
+      |> Plug.Session.call(@session)
+      |> fetch_session
+      |> clear_session
+      |> Plug.Conn.put_resp_header("location", CAS.API.logout_url)
+      |> Plug.Conn.send_resp(307, "")
+  end
+
+
   import_routes Trot.NotFound
 end

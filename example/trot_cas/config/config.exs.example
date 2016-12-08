@@ -27,6 +27,7 @@ config :trot, :router, TrotCas.Router
 config :ueberauth, Ueberauth,
   providers: [cas: {Ueberauth.Strategy.CAS, [
     base_url: "http://sso.example.com/sso",
+    logout_url: "http://sso.example.com/logout",
     callback: "http://192.168.190.100:4000/",
   ]}]
 

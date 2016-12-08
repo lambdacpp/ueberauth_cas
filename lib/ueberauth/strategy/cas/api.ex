@@ -11,6 +11,11 @@ defmodule Ueberauth.Strategy.CAS.API do
     settings(:base_url) <> "/login"
   end
 
+  @doc "Returns the URL to this CAS server's logout page."
+  def logout_url do
+    settings(:logout_url)
+  end
+
   @doc "Validate a CAS Service Ticket with the CAS server."
   def validate_ticket(ticket, conn) do
     HTTPoison.get(validate_url, [], params: %{ticket: ticket, service: callback_url(conn)})
