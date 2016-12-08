@@ -28,8 +28,8 @@ defmodule TrotCas.Router do
           end
         else
           conn
-            |> put_session(:user_id, conn.private.cas_user.alias)
-            |> put_session(:user_name, conn.private.cas_user.name)
+            |> put_session(:user_id, conn.private.cas_user.uid)
+            |> put_session(:user_name, conn.private.cas_user.user)
             |> Plug.Conn.put_resp_header("location", "/")
             |> Plug.Conn.send_resp(307, "")
         end
