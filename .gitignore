@@ -5,3 +5,4 @@
 /docs
 erl_crash.dump
 *.ez
+example/trot_cas/config/config.exs
