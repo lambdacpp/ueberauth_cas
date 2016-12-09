@@ -1,0 +1,7 @@
+version: '2'
+services:
+  cas:
+    build: ./cas_test
+    volumes:
+      - ./config.exs:/ueberauth_cas/example/trot_cas/config/config.exs
+    restart: always
