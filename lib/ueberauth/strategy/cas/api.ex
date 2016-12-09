@@ -2,10 +2,9 @@ defmodule Ueberauth.Strategy.CAS.API do
   @moduledoc """
   CAS server API implementation.
   """
-
+  use Bitwise
   use Ueberauth.Strategy
   alias Ueberauth.Strategy.CAS
-  alias Ueberauth.Strategy.CAS.IPAddr
   
   @doc "Returns the URL to this CAS server's login page."
   def login_url(is_inner) do
@@ -19,10 +18,8 @@ defmodule Ueberauth.Strategy.CAS.API do
 
   def inner_client?(conn) do
     client_ip = get_client_ip(conn)
-    inner_nets =
-      Application.get_env(:ueberauth, Ueberauth)[:providers][:inner_net]
-      |> Enum.map(&(IPAddr.new(&1)))
-    Enum.any?(inner_nets, fn(net) -> IPAddr.include?(net, client_ip) end )
+    inner_nets = Application.get_env(:ueberauth, Ueberauth)[:providers][:inner_net]
+    Enum.any?(inner_nets, fn(net) -> range?(client_ip, net) end )
   end
 
   defp get_client_ip(conn) do
@@ -67,5 +64,29 @@ defmodule Ueberauth.Strategy.CAS.API do
     inner_lable =  if is_inner, do: :inner_cas, else: :cas
     {_, settings} = Application.get_env(:ueberauth, Ueberauth)[:providers][inner_lable]
     settings[key]
+  end
+
+  defp ip2int(ipaddr) do
+    {:ok,{ip1,ip2,ip3,ip4}} = ipaddr |> to_charlist |> :inet.parse_address
+    (ip1 <<< 24) ||| (ip2 <<< 16) ||| (ip3 <<< 8) ||| ip4   
+  end
+
+  defp mask2int(mask) do
+    mask =  if mask in (0..32), do: mask, else: 32
+    (0xffffffff <<< (32-mask)) &&& 0xffffffff
+  end
+  
+  defp parse_net(netstr) do
+    case netstr |>  String.split("/") |> List.to_tuple do
+      {ip, mask} ->
+        {ip2int(ip),mask2int (mask)} 
+     {ip} ->
+        {ip2int(ip),mask2int (32)} 
+    end
+  end
+
+  defp range?(ip,net) do
+    {netaddr, mask} = parse_net(net)
+    (ip2int(ip) &&& mask) == netaddr
   end
 end
