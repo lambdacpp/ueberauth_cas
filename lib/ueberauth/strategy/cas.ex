@@ -114,7 +114,8 @@ defmodule Ueberauth.Strategy.CAS do
   end
 
   defp redirect_url(conn) do
-    CAS.API.login_url <> "?service=#{callback_url(conn)}"
+    is_inner = CAS.API.inner_client?(conn) 
+    CAS.API.login_url(is_inner) <> "?service=#{callback_url(conn)}"
   end
 
   defp handle_ticket(conn, ticket) do
