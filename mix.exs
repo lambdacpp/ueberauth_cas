@@ -23,7 +23,7 @@ defmodule UeberauthCAS.Mixfile do
 
   def application do
     [
-      applications: [:logger, :ueberauth, :httpoison, :ipaddr_elixir]
+      applications: [:logger, :ueberauth, :httpoison]
     ]
   end
 
@@ -37,7 +37,6 @@ defmodule UeberauthCAS.Mixfile do
       {:earmark, "~> 0.2.1", only: :dev},
       {:ex_doc, "~> 0.12.0", only: :dev},
       {:mock, "~> 0.1.1", only: :test},
-      {:ipaddr_elixir, github: "jec/ipaddr-elixir"},
     ]
   end
 

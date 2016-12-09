@@ -5,7 +5,8 @@ defmodule Ueberauth.Strategy.CAS.API do
 
   use Ueberauth.Strategy
   alias Ueberauth.Strategy.CAS
-
+  alias Ueberauth.Strategy.CAS.IPAddr
+  
   @doc "Returns the URL to this CAS server's login page."
   def login_url(is_inner) do
     settings(:base_url,is_inner) <> "/login"
