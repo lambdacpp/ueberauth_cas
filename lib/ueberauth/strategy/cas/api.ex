@@ -34,7 +34,7 @@ defmodule Ueberauth.Strategy.CAS.API do
   
   @doc "Validate a CAS Service Ticket with the CAS server."
   def validate_ticket(ticket, conn) do
-    HTTPoison.get(validate_url(inner_client?(conn)), [], params: %{ticket: ticket, service: callback_url(conn)})
+    HTTPoison.get(validate_url, [], params: %{ticket: ticket, service: callback_url(conn)})
     |> handle_validate_ticket_response
   end
 
@@ -56,8 +56,8 @@ defmodule Ueberauth.Strategy.CAS.API do
     end
   end
 
-  defp validate_url(is_inner) do
-    settings(:base_url,is_inner) <> "/serviceValidate"
+  defp validate_url do
+    settings(:base_url,false) <> "/serviceValidate"
   end
 
   defp settings(key,is_inner) do

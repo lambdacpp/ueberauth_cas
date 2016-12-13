@@ -144,7 +144,7 @@ defmodule Ueberauth.Strategy.CAS do
     str
     |> String.split("&")
     |> Enum.map( fn(x) -> String.split(x,"=") end )
-    |> Map.new(fn x -> {List.first(x),List.last(x)} end)
+    |> Map.new(fn x -> {List.first(x) |> String.downcase ,List.last(x)} end)
   end
 
 end
