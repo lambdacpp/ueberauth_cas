@@ -29,6 +29,8 @@ defmodule TrotCas.Mixfile do
   defp deps do
     [{:ueberauth, "~> 0.2"},
      {:ueberauth_cas, github: "lambdacpp/ueberauth_cas", branch: "another_cas_server"},
-     {:trot, github: "hexedpackets/trot"}]
+     {:trot, github: "hexedpackets/trot"},
+     {:cors_plug, "~> 1.1"}
+    ]
   end
 end

@@ -1,7 +1,9 @@
 defmodule TrotCas.Router do
   alias Ueberauth.Strategy.CAS
   use Trot.Router
+  plug CORSPlug
 
+  
   @session Plug.Session.init(
     store: :cookie,
     key: "_app",
@@ -10,6 +12,19 @@ defmodule TrotCas.Router do
   )
 
   get "/" do
+    user =  conn
+    |> Map.put(:secret_key_base, String.duplicate("1qwGGnj8", 8))
+    |> Plug.Session.call(@session)
+    |> fetch_session
+    |> get_session(:user_id)
+    if is_nil user do
+      "unauthorized"
+    else
+      user
+    end
+  end
+  
+  get "/login" do
     conn = conn
              |> Map.put(:secret_key_base, String.duplicate("1qwGGnj8", 8))
              |> Plug.Session.call(@session)
