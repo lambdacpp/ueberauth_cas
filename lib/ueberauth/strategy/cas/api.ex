@@ -18,10 +18,20 @@ defmodule Ueberauth.Strategy.CAS.API do
 
   def inner_client?(conn) do
     client_ip = get_client_ip(conn)
-    inner_nets = Application.get_env(:ueberauth, Ueberauth)[:providers][:inner_net]
+    inner_nets = get_innner_nets()
     Enum.any?(inner_nets, fn(net) -> range?(client_ip, net) end )
   end
 
+  defp get_innner_nets do
+    case System.get_env("INNER_NET") do
+      nil ->
+        Application.get_env(:ueberauth, Ueberauth)[:providers][:inner_net]
+      nets->
+        nets |> String.split(",")
+    end
+
+  end
+  
   defp get_client_ip(conn) do
     header_map = Map.new(conn.req_headers)
     if Map.has_key?(header_map, "x-real-ip" ) do
@@ -61,9 +71,15 @@ defmodule Ueberauth.Strategy.CAS.API do
   end
 
   defp settings(key,is_inner) do
-    inner_lable =  if is_inner, do: :inner_cas, else: :cas
-    {_, settings} = Application.get_env(:ueberauth, Ueberauth)[:providers][inner_lable]
-    settings[key]
+    env_name = (if is_inner, do: "INNER_U_", else: "U_")<>(key |> Atom.to_string |> String.upcase)
+    case System.get_env(env_name) do
+      nil ->
+        inner_lable =  if is_inner, do: :inner_cas, else: :cas
+        {_, settings} = Application.get_env(:ueberauth, Ueberauth)[:providers][inner_lable]
+        settings[key]
+      value ->
+        value
+    end
   end
 
   defp ip2int(ipaddr) do
