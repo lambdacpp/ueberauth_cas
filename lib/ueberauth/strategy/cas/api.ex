@@ -35,8 +35,7 @@ defmodule Ueberauth.Strategy.CAS.API do
   defp get_client_ip(conn) do
     header_map = Map.new(conn.req_headers)
     if Map.has_key?(header_map, "x-real-ip" ) do
-      {:ok, client_ip} = header_map["x-real-ip"] 
-      client_ip
+      header_map["x-real-ip"] 
     else
       conn.remote_ip |> Tuple.to_list |> Enum.join( ".")
     end
