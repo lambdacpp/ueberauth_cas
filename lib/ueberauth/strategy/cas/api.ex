@@ -66,7 +66,7 @@ defmodule Ueberauth.Strategy.CAS.API do
   end
 
   defp validate_url do
-    settings(:base_url,false) <> "/serviceValidate"
+    settings(:base_url,Application.get_env(:ueberauth, Ueberauth)[:providers][:deploy_inner]) <> "/serviceValidate"
   end
 
   defp settings(key,is_inner) do
