@@ -13,7 +13,7 @@ defmodule Ueberauth.Strategy.CAS.API do
 
   @doc "Returns the URL to this CAS server's logout page."
   def logout_url(is_inner) do
-    settings(:logout_url,is_inner)
+    settings(:base_url,is_inner) <> "/logout"
   end
 
   def inner_client?(conn) do
@@ -25,8 +25,7 @@ defmodule Ueberauth.Strategy.CAS.API do
   defp get_client_ip(conn) do
     header_map = Map.new(conn.req_headers)
     if Map.has_key?(header_map, "x-real-ip" ) do
-      {:ok, client_ip} = header_map["x-real-ip"] 
-      client_ip
+      header_map["x-real-ip"] 
     else
       conn.remote_ip |> Tuple.to_list |> Enum.join( ".")
     end
