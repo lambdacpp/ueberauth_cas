@@ -22,6 +22,8 @@ defmodule Ueberauth.Strategy.CAS.API do
     Enum.any?(inner_nets, fn(net) -> range?(client_ip, net) end )
   end
 
+  def get_app_url()
+
   defp get_innner_nets do
     case System.get_env("INNER_NET") do
       nil ->
@@ -96,7 +98,7 @@ defmodule Ueberauth.Strategy.CAS.API do
     case netstr |>  String.split("/") |> List.to_tuple do
       {ip, mask} ->
         {ip2int(ip),mask2int (mask)} 
-     {ip} ->
+      {ip} ->
         {ip2int(ip),mask2int (32)} 
     end
   end
